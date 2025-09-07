@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Strat Cieplnych CWU</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-section {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+        }
+        .form-section h3 {
+            color: #34495e;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input, select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .dn-select {
+            margin-bottom: 10px;
+        }
+        .submit-btn {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+        }
+        .submit-btn:hover {
+            background-color: #2980b9;
+        }
+        .results {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .result-item {
+            margin: 10px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 3px;
+        }
+        .error {
+            background-color: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .files-section {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .file-item {
+            padding: 8px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 3px;
+            border-left: 4px solid #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌡️ Kalkulator Strat Cieplnych CWU</h1>
+        
+        <form method="POST">
+            <!-- Wybór średnicy DN -->
+            <div class="form-section">
+                <h3>Wybór średnicy rurociągu</h3>
+                <div class="form-group">
+                    <label for="dn_key">Standardowa średnica DN:</label>
+                    <select name="dn_key" id="dn_key" class="dn-select">
+                        <option value="">-- Wybierz lub wpisz własną średnicę --</option>
+                        {% for dn_key, diameter in dn_map.items() %}
+                        <option value="{{ dn_key }}">{{ dn_key }} ({{ diameter }} mm)</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Parametry rurociągu cyrkulacyjnego -->
+            <div class="form-section">
+                <h3>Rurociąg cyrkulacyjny</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="L_m">Długość rurociągu L [m]:</label>
+                        <input type="number" step="0.1" name="L_m" id="L_m" value="{{ form.L_m }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="d_out_mm">Średnica zewnętrzna [mm]:</label>
+                        <input type="number" step="0.1" name="d_out_mm" id="d_out_mm" value="{{ form.d_out_mm }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="insulation_mm">Grubość izolacji [mm]:</label>
+                        <input type="number" step="0.1" name="insulation_mm" id="insulation_mm" value="{{ form.insulation_mm }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lambda_ins">Współczynnik przewodzenia λ [W/(m·K)]:</label>
+                        <input type="number" step="0.001" name="lambda_ins" id="lambda_ins" value="{{ form.lambda_ins }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="h_ext">Współczynnik przejmowania h_ext [W/(m²·K)]:</label>
+                        <input type="number" step="0.1" name="h_ext" id="h_ext" value="{{ form.h_ext }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="T_hot">Temperatura wody T_hot [°C]:</label>
+                        <input type="number" step="0.1" name="T_hot" id="T_hot" value="{{ form.T_hot }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="T_amb">Temperatura otoczenia T_amb [°C]:</label>
+                        <input type="number" step="0.1" name="T_amb" id="T_amb" value="{{ form.T_amb }}" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parametry zasobnika -->
+            <div class="form-section">
+                <h3>Zasobnik CWU</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="UA_tank">Współczynnik strat UA zasobnika [W/K]:</label>
+                        <input type="number" step="0.1" name="UA_tank" id="UA_tank" value="{{ form.UA_tank }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="T_tank">Temperatura zasobnika T_tank [°C]:</label>
+                        <input type="number" step="0.1" name="T_tank" id="T_tank" value="{{ form.T_tank }}" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parametry bilansu i kosztów -->
+            <div class="form-section">
+                <h3>Bilans energetyczny i koszty</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="hours_per_day">Godziny pracy na dobę [h]:</label>
+                        <input type="number" step="1" name="hours_per_day" id="hours_per_day" value="{{ form.hours_per_day }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="days_per_year">Dni pracy w roku:</label>
+                        <input type="number" step="1" name="days_per_year" id="days_per_year" value="{{ form.days_per_year }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="price_per_GJ">Cena energii [zł/GJ]:</label>
+                        <input type="number" step="0.1" name="price_per_GJ" id="price_per_GJ" value="{{ form.price_per_GJ }}" required>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">🔥 Oblicz straty cieplne</button>
+        </form>
+
+        {% if error %}
+        <div class="error">
+            <strong>Błąd:</strong> {{ error }}
+        </div>
+        {% endif %}
+
+        {% if result %}
+        <div class="results">
+            <h3>📊 Wyniki obliczeń</h3>
+            <div class="result-item">
+                <strong>Straty liniowe rurociągu:</strong> {{ "%.3f"|format(result.loop_q_wpm) }} W/m
+            </div>
+            <div class="result-item">
+                <strong>Moc strat rurociągu:</strong> {{ "%.3f"|format(result.loop_Qdot_kW) }} kW
+            </div>
+            <div class="result-item">
+                <strong>Moc strat zasobnika:</strong> {{ "%.1f"|format(result.tank_loss_W) }} W
+            </div>
+            <div class="result-item">
+                <strong>Całkowita moc strat:</strong> {{ "%.3f"|format(result.total_kW) }} kW
+            </div>
+            <div class="result-item">
+                <strong>Energia roczna:</strong> {{ "%.1f"|format(result.E_kWh_year) }} kWh/rok ({{ "%.3f"|format(result.E_GJ_year) }} GJ/rok)
+            </div>
+            <div class="result-item">
+                <strong>Koszt roczny:</strong> {{ "%.2f"|format(result.cost_year) }} zł/rok
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Sekcja "Pokaż pliki" -->
+        <div class="files-section">
+            <h3>📁 Pliki projektu</h3>
+            <p>Struktura plików kalkulatora strat cieplnych:</p>
+            
+            <div class="file-item">
+                <strong>app.py</strong> - Główna aplikacja Flask z logiką obliczeń
+            </div>
+            <div class="file-item">
+                <strong>calc/pipes.py</strong> - Obliczenia strat cieplnych rurociągów wg ISO 12241
+            </div>
+            <div class="file-item">
+                <strong>calc/storage.py</strong> - Obliczenia strat zasobników CWU
+            </div>
+            <div class="file-item">
+                <strong>calc/finance.py</strong> - Obliczenia kosztów i bilansu energetycznego
+            </div>
+            <div class="file-item">
+                <strong>calc/norms.py</strong> - Stałe i normy techniczne
+            </div>
+            <div class="file-item">
+                <strong>templates/4_Straty.html</strong> - Szablon interfejsu użytkownika
+            </div>
+            <div class="file-item">
+                <strong>static/</strong> - Pliki statyczne (CSS, JS, HTML)
+            </div>
+            <div class="file-item">
+                <strong>tests/</strong> - Testy jednostkowe
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Automatyczne wypełnianie średnicy przy wyborze DN
+        document.getElementById('dn_key').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            if (selectedOption.value) {
+                const diameterMatch = selectedOption.text.match(/\(([0-9.]+) mm\)/);
+                if (diameterMatch) {
+                    document.getElementById('d_out_mm').value = diameterMatch[1];
+                }
+            }
+        });
+    </script>
+</body>
+</html>
