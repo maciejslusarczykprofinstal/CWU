@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Obliczenia Strat Cieplnych – demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Obliczenia strat ciepła rury (demo)</h1>
+  <p id="msg">Ładowanie…</p>
+
+  <form id="calc-form">
+    <div class="grid">
+      <label>Długość L [m]<input type="number" step="0.01" id="L" value="10"></label>
+      <label>r<sub>i</sub> [m]<input type="number" step="0.0001" id="r_i" value="0.02"></label>
+      <label>r<sub>o</sub> [m]<input type="number" step="0.0001" id="r_o" value="0.05"></label>
+      <label>λ [W/(m·K)]<input type="number" step="0.001" id="k" value="0.04"></label>
+      <label>T<sub>in</sub> [°C]<input type="number" step="0.1" id="T_in" value="55"></label>
+      <label>T<sub>out</sub> [°C]<input type="number" step="0.1" id="T_out" value="20"></label>
+    </div>
+    <button type="submit">Oblicz</button>
+  </form>
+
+  <div id="result" class="card"></div>
+
+  <script src="main.js"></script>
+</body>
+</html>

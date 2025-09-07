@@ -1,0 +1,14 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "open-browser",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "-c",
+        "import webbrowser, time; time.sleep(1.5); webbrowser.open('http://127.0.0.1:8000/docs')"
+      ]
+    }
+  ]
+}
