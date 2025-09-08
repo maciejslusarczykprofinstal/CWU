@@ -1,11 +1,11 @@
 [tool.ruff]
 line-length = 88
 target-version = "py311"
+fix = true
+unsafe-fixes = true
 
 [tool.ruff.lint]
 extend-select = ["E", "F", "B", "I"]
-fix = true
-unsafe-fixes = true
 
 [tool.ruff.lint.isort]
 known-first-party = ["calc"]
