@@ -1,0 +1,13 @@
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-select = ["E", "F", "I"]   # PEP8, flake, importy
+fix = true
+unsafe-fixes = false
+
+[tool.ruff.lint.isort]
+known-first-party = ["calc"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
