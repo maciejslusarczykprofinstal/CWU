@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <title>CWU - Strona główna</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .welcome-container {
+      background: white;
+      border-radius: 16px;
+      padding: 48px 40px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 90%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .welcome-title {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    
+    .welcome-emoji {
+      font-size: 4rem;
+      margin-bottom: 24px;
+      display: block;
+    }
+    
+    .welcome-subtitle {
+      font-size: 1.25rem;
+      color: #4a5568;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+    
+    .app-link {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .app-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .health-link {
+      display: block;
+      margin-top: 24px;
+      color: #718096;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    
+    .health-link:hover {
+      color: #4a5568;
+    }
+    
+    @media (max-width: 600px) {
+      .welcome-container {
+        padding: 32px 24px;
+      }
+      
+      .welcome-title {
+        font-size: 2.5rem;
+      }
+      
+      .welcome-emoji {
+        font-size: 3rem;
+      }
+      
+      .welcome-subtitle {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="welcome-container">
+    <span class="welcome-emoji">🎉</span>
+    <h1 class="welcome-title">Działa!</h1>
+    <p class="welcome-subtitle">Serwer i routing OK (wejdź też na /app)</p>
+    <a href="/app" class="app-link">Przejdź do aplikacji</a>
+    <a href="/healthz" class="health-link">Sprawdź status serwera</a>
+  </div>
+</body>
+</html>
