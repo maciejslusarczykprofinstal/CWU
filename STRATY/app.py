@@ -27,10 +27,10 @@ app = Flask(__name__, template_folder="templates", static_folder="static")
 def healthz():
     return "ok", 200
 
-# Prosty test – zawsze coś zobaczysz pod "/"
+# Stylowa strona główna
 @app.get("/")
-def index_plain():
-    return "Działa 🎉 – serwer i routing OK (wejdź też na /app)", 200
+def index_homepage():
+    return render_template("homepage.html")
 
 
 # ====== Pełna logika aplikacji pod /app ======
